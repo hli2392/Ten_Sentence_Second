@@ -1,0 +1,110 @@
+---
+title: "The Relationship Between Attention and Participants' Scores"
+date: today
+execute: 
+  echo: true
+author:
+  - name: Helen Li
+    affiliation:
+       - name: University of Wisconsin - Madison
+
+format:
+ html:
+   toc: true
+   code-fold: false
+
+jupyter: python3
+
+bibliography: references.bib
+---
+
+# Introduction
+
+Research Question:Do students in the focused attention group have higher average scores than students in the divided attention group?
+This study examine whether there is a relationship between attention and participants' scores.
+
+```{python}
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+df = sns.load_dataset('attention')
+```
+# Literature
+
+Attention may play a role in task performance, which motivates my interest in comparing scores between focused and divided attention groups.
+This paper explores that relationship using the attention dataset, but it does not review published studies.
+According to the study research by [@zhao2024memory], it support the data analysis regarding to study's attention, short-term memory, and their creative thinking skills.
+
+
+# Method
+
+The dataset includes 20 participants, each with a score in three solution conditions.
+I calculated each participant's average score across these conditions and correlated it with attention group, coded as 0 for divided attention and 1 for focused attention.
+
+```{python}
+participant_scores = (
+    df.groupby(['subject', 'attention'])['score']
+    .mean()
+    .reset_index(name='mean_score')
+)
+
+participant_scores['attention_d'] = (
+    participant_scores['attention']
+    .map({'divided': 0, 'focused': 1})
+)
+
+print(participant_scores)
+```
+# Results
+
+```{python}
+corr_val = participant_scores['attention_d'].corr(
+    participant_scores['mean_score']
+)
+if corr_val > 0:
+    direction = 'positive'
+elif corr_val < 0:
+    direction = 'negative'
+else:
+    direction = 'zero'
+if abs(corr_val) >= 0.8:
+    strength = 'very strong'
+elif abs(corr_val) >= 0.4:
+    strength = 'moderate'
+else:
+    strength = 'weak'
+
+narrative = f'a {strength} {direction} correlation'
+
+if corr_val == 0:
+    narrative = 'no linear correlation'
+
+group_means = participant_scores.groupby('attention')['mean_score'].mean()
+divided_mean = group_means['divided']
+focused_mean = group_means['focused']
+
+print(corr_val)
+print(narrative)
+```
+Using the classic simple Pearson correaltion approach these data produce a correlation coefficient of `{python} f"{corr_val:.5f}"`, as such, given this result we conclude that the relationship is `{python} f"{narrative}"`
+
+```{python}
+#| label: fig-attention-scores
+#| fig-cap: "Average scores by attention group."
+sns.lmplot(
+    data=participant_scores,
+    x='attention_d',
+    y='mean_score'
+)
+plt.show()
+```
+As shown in @fig-attention-scores, participants in the focused attention group tended to have higher average scores than participants in the divided attention group.
+
+# Discussion
+In conclusion, participants in the focused attention group had higher average scores than participants in the divided attention group,
+which supports the predicted direction of the relationship in this sample.
+However, the correlation alone does not show that focused attention caused higher scores, and averaging across the three solution conditions may hide differences between conditions.
+
+
