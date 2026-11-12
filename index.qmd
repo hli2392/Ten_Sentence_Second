@@ -31,7 +31,7 @@ import matplotlib.pyplot as plt
 
 df = sns.load_dataset('attention')
 ```
-# Literature
+# Literature Review
 
 Attention may play a role in task performance, which motivates my interest in comparing scores between focused and divided attention groups.
 This paper explores that relationship using the attention dataset, but it does not review published studies.
