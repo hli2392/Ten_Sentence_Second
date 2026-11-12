@@ -1,5 +1,5 @@
 ---
-title: "The Relationship Between Attention and Participants' Scores"
+title: "The Relationship Between Attention and Students' Scores"
 date: today
 execute: 
   echo: true
